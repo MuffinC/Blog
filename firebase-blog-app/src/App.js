@@ -11,12 +11,13 @@ import AddEditBlog from './pages/AddEditBlog';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
 import Header from './components/Header';
+import Auth from "./pages/Auth";
 
 function App() {
-  const [active, setActive] =useState('home');
+  const [active, setActive] =useState("home");
   return (
     <div className="App">
-      <Header setActive={setActive} axtive={active}/>
+      <Header setActive={setActive} active={active}/>
       <ToastContainer />
       <Routes>
         <Route path="/" element={<Home/>}/>
@@ -24,6 +25,7 @@ function App() {
         <Route path="/create" element={<AddEditBlog/>}/>
         <Route path="/update/:id" element={<AddEditBlog/>}/>
         <Route path="/about" element={<About/>}/>
+        <Route path="/auth" element={<Auth />}/>
         <Route path="*" element={<NotFound/>}/>
 
 
