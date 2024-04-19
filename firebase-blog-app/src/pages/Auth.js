@@ -14,8 +14,8 @@ const Auth = () => {
   const {email, password, firstName, lastName, confirmPassword} = state;
 
   const handleChange =(e) => {
-    setState({...state, [e.target.name]: e.target.value})
-  }
+    setState({...state, [e.target.name]: e.target.value});
+  };
   return (
     <div className="container-fluid mb-4">
       <div className='container'>
@@ -27,10 +27,10 @@ const Auth = () => {
         < div className="row h-100 justify-content-center allign-items-center">
           <div className='col-10 col-md-8 col-lg-6'>
             <form className='row'>
-              {signUp && (
+              {signUp && ( 
                 <>
                 <div className='col-6 py-3'>
-                <input type='email' 
+                <input type='text' 
                 className='form-control input-text-box' 
                 placeholder='First Name' 
                 name='firstName' 
@@ -38,12 +38,13 @@ const Auth = () => {
                 onChange={handleChange} />
                 </div> 
                 <div className='col-6 py-3'>
-                <input type='email' 
+                <input type='text' 
                 className='form-control input-text-box' 
                 placeholder='Last Name' 
                 name='lastName' 
                 value={lastName} 
-                onChange={handleChange} />
+                onChange={handleChange} 
+                />
                 </div> 
                 </>
               )}
@@ -58,7 +59,7 @@ const Auth = () => {
                 <div className='col-12 py-3'>
                 <input type='password' 
                 className='form-control input-text-box' 
-                placeholder='Pasword' 
+                placeholder='Password' 
                 name='password' 
                 value={password} 
                 onChange={handleChange} />
@@ -67,10 +68,11 @@ const Auth = () => {
                     <div className='col-12 py-3'>
                       <input type='password' 
                       className='form-control input-text-box' 
-                      placeholder='Confirm Pasword' 
+                      placeholder='Confirm Password' 
                       name='confirmPassword' 
                       value={confirmPassword} 
-                      onChange={handleChange} />
+                      onChange={handleChange} 
+                      />
                     </div> 
 
                 )}
@@ -88,7 +90,7 @@ const Auth = () => {
               {!signUp ? (
                 <>
                 <div className='text-center justify-content-center mt-2 pt-2'>
-                  <p className='small fw-bold mt-2 pt- mb-0'>
+                  <p className='small fw-bold mt-2 pt-1 mb-0'>
                     Don't have an account ?&nbsp;
                     <span className='link-danger' 
                     style={{textDecoration: "none", cursor:"pointer"}}
@@ -103,7 +105,7 @@ const Auth = () => {
               ):(
                 <>
                 <div className='text-center justify-content-center mt-2 pt-2'>
-                  <p className='small fw-bold mt-2 pt- mb-0'>
+                  <p className='small fw-bold mt-2 pt1- mb-0'>
                     Already have an account ?&nbsp;
                     <span  style={{
                       textDecoration: "none", 
