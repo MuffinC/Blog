@@ -34,6 +34,7 @@ const AddEditBlog = () => {
 
       uploadTask.on("state_changed", (snapshot)=>{
           const progress =(snapshot.bytesTransferred / snapshot.totalBytes)*100;
+          console.log("Upload is " +progress + "% done");
           setProgress(progress);
           switch (snapshot.state){
             case "paused":
@@ -140,7 +141,7 @@ const AddEditBlog = () => {
                   onChange ={(e)=>setFile(e.target.files[0])}/>
                   </div> 
                   <div className='col-12 py-3 text-center'>
-                    <button className='btn btn-add' type='submit'>
+                    <button className='btn btn-add' type='submit' disabled={progress !==null && progress <100}>
                       Submit
                     </button>
                   </div>
