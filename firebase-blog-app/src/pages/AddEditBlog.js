@@ -1,8 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import ReactTagInput from '@pathofdev/react-tag-input';
 import "@pathofdev/react-tag-input/build/index.css";
-import { storage } from '../firebase';
+import { db,storage } from '../firebase';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import {async} from "@firebase/util";
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import {useNavigate} from "react-router-dom";
 
 const initialState={
   title:"",
@@ -20,11 +23,12 @@ const categoryOption =[
   "Software/Hardware Side Projects"
 ];
 
-const AddEditBlog = () => {
+const AddEditBlog = ({user}) => {
   const [form, setForm] = useState(initialState);
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(null);
 
+  const navigate = useNavigate();
   const {title, tags, category, trending, description} = form
 
   useEffect(()=>{
@@ -60,12 +64,40 @@ const AddEditBlog = () => {
   },[file])
 
 
-  const handleChange =(e) =>{};
+  const handleChange =(e) =>{
+    setForm({...form, [e.target.name]: e.target.value });
+  };
 
-  const handleTags =() =>{};
-  const handleTrending =() =>{};
+  const handleTags =(tags) =>{
+    setForm({...form, tags});
+  };
+    
+  const handleTrending =(e) =>{
+    setForm({
+      ...form, trending:e.target.value
+    });
+  };
 
-  const onCategoryChange=() =>{};
+  const onCategoryChange=(e) =>{
+    setForm({...form, category:e.target.value })
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if(category && tags && title && file && description && trending){
+      try{
+        await addDoc(collection(db, "blogs"),{
+          ...form, 
+          timestamp: serverTimestamp(),
+          author: user.displayName,
+          userId:user.uid
+        })
+      }catch(err){
+        console.log(err);
+      }
+    }
+    navigate("/")
+  };
   return (
     <div className='container-fluid mb-4'>
       <div className='container'>
@@ -76,7 +108,7 @@ const AddEditBlog = () => {
           </div>
           <div className='row h-100 justify-content-center align-items-center'>
             <div className='col-10 col-md-8 col-lg-6'>
-              <form  className='row blog-form'>
+              <form  className='row blog-form' onSubmit={handleSubmit}>
                 <div className='col-12 py-3'>
                 <input type='text' 
                 className='form-control input-text-box' 
@@ -104,7 +136,7 @@ const AddEditBlog = () => {
                   Yes&nbsp;</label>
                   <input type='radio' 
                 className='form-check-input' 
-                value='yes'
+                value='no'
                 name='radioOption' 
                 checked={trending ==='no'}
                 onChange={handleTrending} 

@@ -3,7 +3,7 @@ import './App.css';
 import "./style.scss";
 import "./media-query.css";
 import Home  from './pages/Home';
-import {Routes, Route, useNavigate} from "react-router-dom";
+import {Routes, Route, useNavigate,Navigate} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Detail from './pages/Detail';
@@ -46,8 +46,8 @@ const handleLogout =() =>{
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/detail/:id" element={<Detail/>}/>
-        <Route path="/create" element={<AddEditBlog/>}/>
-        <Route path="/update/:id" element={<AddEditBlog/>}/>
+        <Route path="/create" element={user?.uid? <AddEditBlog user={user}/>:<Navigate to="/"/>}/> 
+        <Route path="/update/:id" element={user?.uid? <AddEditBlog user={user}/>:<Navigate to="/"/>}/>
         <Route path="/about" element={<About/>}/>
         <Route path="/auth" element={<Auth setActive={setActive}/>} />
         <Route path="*" element={<NotFound/>}/>
