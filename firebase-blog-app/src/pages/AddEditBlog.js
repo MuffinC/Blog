@@ -3,9 +3,10 @@ import ReactTagInput from '@pathofdev/react-tag-input';
 import "@pathofdev/react-tag-input/build/index.css";
 import { db,storage } from '../firebase';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import {async} from "@firebase/util";
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import {useNavigate} from "react-router-dom";
+import { addDoc, collection, getDoc,serverTimestamp, updateDoc,doc } from 'firebase/firestore';
+import {useNavigate, useParams} from "react-router-dom";
+import {toast} from"react-toastify"
+
 
 const initialState={
   title:"",
@@ -23,10 +24,12 @@ const categoryOption =[
   "Software/Hardware Side Projects"
 ];
 
-const AddEditBlog = ({user}) => {
+const AddEditBlog = ({user, setActive}) => {
   const [form, setForm] = useState(initialState);
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(null);
+
+  const {id} = useParams();
 
   const navigate = useNavigate();
   const {title, tags, category, trending, description} = form
@@ -55,6 +58,7 @@ const AddEditBlog = ({user}) => {
         console.log(error)
       }, ()=>{
         getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) =>{
+          toast.info("Image upload to firebase successfuly")
           setForm((prev)=> ({ ...prev, imgUrl:downloadUrl}));
         });
       } 
@@ -62,8 +66,19 @@ const AddEditBlog = ({user}) => {
     };
     file && uploadFile();
   },[file])
+  
+  useEffect(()=>{
+    id && getBlogDetail();
+  },[id]);
 
-
+  const getBlogDetail = async () =>{
+    const docRef = doc(db, "blogs", id);
+    const snapshot = await getDoc(docRef);
+    if (snapshot.exists()){
+      setForm({...snapshot.data()});
+    }
+    setActive(null);
+  };
   const handleChange =(e) =>{
     setForm({...form, [e.target.name]: e.target.value });
   };
@@ -84,17 +99,38 @@ const AddEditBlog = ({user}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(category && tags && title && file && description && trending){
-      try{
-        await addDoc(collection(db, "blogs"),{
-          ...form, 
-          timestamp: serverTimestamp(),
-          author: user.displayName,
-          userId:user.uid
-        })
-      }catch(err){
-        console.log(err);
+    if(category && tags && title && description && trending){
+      if(!id){
+        try{
+          await addDoc(collection(db, "blogs"),{
+            ...form, 
+            timestamp: serverTimestamp(),
+            author: user.displayName,
+            userId:user.uid
+          })
+          toast.success("Blog created successfuly")
+        }catch(err){
+          console.log(err);
+        }
+
+      }else{
+        try{
+          await updateDoc(doc(db, "blogs", id),{
+            ...form, 
+            timestamp: serverTimestamp(),
+            author: user.displayName,
+            userId:user.uid
+          });
+          toast.success("Blog updated successfuly")
+
+        }catch(err){
+          console.log(err);
+        }
+
       }
+     
+    }else{
+      return toast.error("All fields are mandatory to fill");
     }
     navigate("/")
   };
@@ -103,7 +139,7 @@ const AddEditBlog = ({user}) => {
       <div className='container'>
         <div className='col-12 text-center'>
           <div className='text-center heading py-2'>
-            Create Blog
+           {id? "Updaate Blog":"Create Blog"}
           </div>
           </div>
           <div className='row h-100 justify-content-center align-items-center'>
@@ -169,12 +205,13 @@ const AddEditBlog = ({user}) => {
                  <div className='mb-3'>
                   <input 
                   type="file" 
+
                   className='form-control'
                   onChange ={(e)=>setFile(e.target.files[0])}/>
                   </div> 
                   <div className='col-12 py-3 text-center'>
                     <button className='btn btn-add' type='submit' disabled={progress !==null && progress <100}>
-                      Submit
+                      {id ? "Update":"Submit"}
                     </button>
                   </div>
               </form>
