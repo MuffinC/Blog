@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from 'react'
 import {collection, onSnapshot} from 'firebase/firestore'
 import {db} from "../firebase"
+import BlogSection from "../components/BlogSection";
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState([]);
@@ -24,14 +25,14 @@ const Home = () => {
   },[]);
 
 console.log("blogs", blogs);
-//2:10:13
+
   return (
     <div className='container-fluid pb-4 pt-4 padding'>
       <div className='container padding'>
         <div  className='row mx-0'>
           <h2>Trending</h2>
           <div className='col-md-8'>
-            <h2>Blog section</h2>
+            <BlogSection blogs ={blogs}/>
           </div>
           <div className='col-md-3'>
             <h2>Tags</h2>
