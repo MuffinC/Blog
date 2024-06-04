@@ -11,8 +11,22 @@ const Home = ({setActive, user}) => {
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState([]);
   const [tags, setTags] = useState([]);
+  const [trending, setTrendBlogs] = useState([]);
+
+  const getTrendingBlogs = async () =>{
+    const blogRef=collection(db,"blogs");
+    const trendQuery = query(blogRef, where("trending" , "==", "yes"));
+    const querySnapshot = await gettDocs(trendQuery);
+    let trendBlogs = [];
+    querySnapshot.forEach((doc)=>{
+      trendBlogs.push({id: doc.id,...doc.data()})
+
+    })
+    setTrendBlogs(trendBlogs)
+  }
 
   useEffect(()=>{
+    getTrendingBlogs()
     const unsub = onSnapshot(
       collection(db, "blogs"),
       (snapshot) =>{
@@ -33,6 +47,8 @@ const Home = ({setActive, user}) => {
     );
     return () =>{
       unsub();
+      getTrendingBlogs();
+
     }
   },[]);
 if (loading){
@@ -58,7 +74,7 @@ console.log("blogs", blogs);
     <div className='container-fluid pb-4 pt-4 padding'>
       <div className='container padding'>
         <div  className='row mx-0'>
-          <h2>Trending</h2>
+          <Trending />
           <div className='col-md-8'>
             <BlogSection blogs ={blogs} user={user} handleDelete={handleDelete}/>
           </div>
