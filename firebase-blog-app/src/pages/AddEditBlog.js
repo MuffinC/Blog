@@ -19,9 +19,10 @@ const initialState={
 const categoryOption =[
   "Job Updates",
   "Cooks",
-  "Book Reviews",
+  "Reviews",
   "Crafts",
   "Software/Hardware Side Projects"
+
 ];
 
 const AddEditBlog = ({user, setActive}) => {

@@ -8,7 +8,7 @@ const Trending = ({blogs}) => {
     const options={
         loop:true,
         margin:10,
-        new: true,
+        nav: true,
         responseive:{
             0:{
                 items:1,
@@ -24,13 +24,13 @@ const Trending = ({blogs}) => {
             },
 
         },
-    }
+    };
   return (
     <>
     <div>
-    <div className='blog-heading text-start py-2 mb-4'> Trending</div>
+    <div className='blog-heading text-start py-2 mb-4'>Trending</div>
     </div>
-    <OwlCarousel className='owl-theme' {...options}>
+    <OwlCarousel className="owl-theme" {...options}>
         {blogs?.map((item)=>(
             <div className='item px-2' key={item.id}>
                 <Link to={`/detail/${item.id}`}>
@@ -38,15 +38,15 @@ const Trending = ({blogs}) => {
                         <div className='trending-img-size'>
                             <img src={item.imgUrl} 
                             alt={item.title} 
-                            className='trending-img-size'/>
+                            className='trending-img-relative'/>
                         </div>
                         <div className='trending-img-absolute'></div>
-                
-                        <div className='trending-img-absolute-1'></div>
+                        <div className='trending-img-absolute-1'>
                             <span className='text-white'>{item.title}</span>
                             <div className='trending-meta-info'>
                                 {item.author} - {item.timestamp.toDate().toDateString()}
                             </div>
+                    </div>
                     </div>
                 </Link>
             </div>
@@ -54,7 +54,7 @@ const Trending = ({blogs}) => {
 
     </OwlCarousel>
     </>
-  )
-}
+  );
+};
 
 export default Trending
